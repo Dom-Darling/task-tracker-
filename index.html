@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MyFlexXZone | Daily Tasks</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">ONE STEP AT A TIME</p>
+      <h1>My FlexXZone</h1>
+      <p>Add something you want to get done today.</p>
+      <details>
+  <summary>How to use MyFlexXZone</summary>
+  <ul>
+    <li>Enter a task and click Add task or press Enter.</li>
+    <li>Check a task to mark it complete.</li>
+    <li>Use Delete to permanently remove a task.</li>
+  </ul>
+  <p>Your tasks are saved in this browser.</p>
+</details>
+      <form id="task-form" novalidate>
+        <label for="task-input">New task</label>
+        <div class="input-row">
+          <input id="task-input" name="task" placeholder="e.g. Practice JavaScript" maxlength="200" aria-describedby="error" required>
+          <button type="submit">Add task</button>
+        </div>
+        <p id="error" role="alert"></p>
+      </form>
+      <h2>Tasks</h2>
+      <p id="empty-message">Your list is empty. Add your first task above.</p>
+      <ul id="task-list"></ul>
+      <p id="status" role="status"></p>
+      <p class="note">Tasks are saved in this browser and remain after refreshing. Clearing browser data removes them.</p>
+<p id="storage-warning" role="status"></p>
+    </main>
+  </body>
+</html>
+]

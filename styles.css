@@ -1,0 +1,134 @@
+:root { font-family: system-ui, sans-serif; color: #172c2a; background: #f1f5f2; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 48px 20px; }
+main { max-width: 640px; margin: auto; padding: clamp(24px, 5vw, 48px); background: white; border: 1px solid #d8e2db; border-radius: 20px; }
+.eyebrow { font-size: 12px; letter-spacing: .13em; font-weight: 700; color: #46655f; }
+h1 { font-size: clamp(28px, 5vw, 40px); letter-spacing: -.04em; margin-bottom: 12px; }
+h2 { font-size: 20px; }
+p { line-height: 1.6; }
+form { margin-top: 32px; }
+label { display: block; font-weight: 600; margin-bottom: 8px; }
+.input-row { display: flex; gap: 10px; }
+input, button { font: inherit; border-radius: 8px; padding: 12px; }
+input { min-width: 0; flex: 1; border: 1px solid #80978f; }
+button { color: white; background: #245b4c; border: 0; cursor: pointer; font-weight: 600; }
+button:hover { background: #184737; }
+:focus-visible { outline: 3px solid #ad6500; outline-offset: 3px; }
+#error { color: #a42121; min-height: 24px; margin: 8px 0; }
+ul { list-style: none; padding: 0; }
+li { padding: 14px 0; border-bottom: 1px solid #d8e2db; overflow-wrap: anywhere; }
+#empty-message, .note, #status { color: #52675f; font-size: 14px; }
+.note { margin-top: 32px; }
+@media (max-width: 440px) { .input-row { flex-direction: column; } body { padding: 20px 12px; } }
+
+
+#task-list label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  cursor: pointer;
+}
+
+#task-list input[type="checkbox"] {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  accent-color: #245b4c;
+}
+
+/* Motion enhances the page; all content stays usable without it. */
+body {
+  background: radial-gradient(ellipse at top left, #dceee3, transparent 65%), #f1f5f2;
+}
+main { box-shadow: 0 20px 60px #173b2910; }
+#task-list li { border-radius: 10px; padding: 16px 12px; }
+#task-list label span { min-width: 0; }
+#task-list li:focus-within { background: #edf6f0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  main { animation: page-arrive 650ms ease-out both; }
+  button { transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+  button:hover { transform: translateY(-2px); box-shadow: 0 5px 14px #245b4c26; }
+  button:active { transform: translateY(0); }
+  #task-list li { transition: background-color 200ms ease; }
+  #task-list li:hover { background: #edf6f0; }
+}
+
+@keyframes page-arrive {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* MyFlexXZone theme: change these variables to adjust the palette. */
+:root {
+  --gold: #f5ca50;
+  --green: #70d18b;
+  --red: #ff8f88;
+  --surface: #18221b;
+  --muted: #bac5b8;
+  color: #f8f3df;
+  background: #0d130f;
+  color-scheme: dark;
+}
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top left, #b82e2926, transparent 55%),
+    radial-gradient(ellipse at bottom right, #27814426, transparent 55%),
+    #0d130f;
+}
+main {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid #425442;
+  box-shadow: 0 24px 70px #0005;
+}
+main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7px;
+  background: linear-gradient(to right, #db4941 0% 33.33%, var(--gold) 33.33% 66.66%, #46ad62 66.66% 100%);
+}
+h1, h2, .eyebrow { color: var(--gold); }
+input {
+  color: #f8f3df;
+  background: #101912;
+  border-color: #7c947d;
+}
+input::placeholder { color: #b3bfaf; }
+button { color: #101912; background: var(--gold); }
+button:hover { background: #ffdc76; }
+:focus-visible { outline-color: var(--gold); }
+#error { color: var(--red); }
+#empty-message, .note, #status { color: var(--muted); }
+#task-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-color: #425442;
+}
+#task-list label { flex: 1; min-width: 0; }
+#task-list input[type="checkbox"] { accent-color: var(--green); }
+#task-list li:hover, #task-list li:focus-within { background: #243929; }
+#task-list button { flex-shrink: 0; background: var(--red); color: #22120f; }
+#task-list button:hover { background: #ffb1a9; }
+details {
+  margin-top: 24px;
+  padding: 16px;
+  background: #101912;
+  border: 1px solid #425442;
+  border-radius: 10px;
+}
+summary { color: var(--green); font-weight: 600; cursor: pointer; }
+details ul { list-style: disc; padding-left: 22px; }
+details li { border: 0; padding: 6px 0; }
+@media (prefers-reduced-motion: no-preference) {
+  button:hover { box-shadow: 0 5px 18px #f5ca5020; }
+}
