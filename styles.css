@@ -64,13 +64,13 @@ main { box-shadow: 0 20px 60px #173b2910; }
 
 /* MyFlexXZone theme: change these variables to adjust the palette. */
 :root {
-  --gold: #f5ca50;
-  --green: #70d18b;
-  --red: #ff8f88;
+  --gold: #9550f5;
+  --green: #13eeee;
+  --red: #f61f0f;
   --surface: #18221b;
   --muted: #bac5b8;
   color: #f8f3df;
-  background: #0d130f;
+  background: #33cb66;
   color-scheme: dark;
 }
 body {
