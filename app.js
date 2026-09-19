@@ -77,7 +77,12 @@ reducedMotion.addEventListener('change', () => {
     document.getAnimations().forEach((animation) => animation.cancel());
   }
 });
+function updateTaskCount() {
+  const completedCount = tasks.filter(task => task.completed).length;
+  const activeCount = tasks.length - completedCount;
 
+  status.textContent = `${activeCount} active · ${completedCount} completed`;
+}
 // Rebuild the visible list from the current data.
 function renderTasks() {
   revealObserver?.disconnect();
@@ -120,7 +125,7 @@ list.append(item);
   revealObserver?.observe(item);
 }
   emptyMessage.hidden = tasks.length > 0;
-  status.textContent = `${tasks.length} ${tasks.length === 1 ? 'task' : 'tasks'} in your list.`;
+updateTaskCount();
 }
 
 // Submitting the form works with both the button and the Enter key.
