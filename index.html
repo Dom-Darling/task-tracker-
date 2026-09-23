@@ -30,12 +30,17 @@
         <p id="error" role="alert"></p>
       </form>
       <h2>Tasks</h2>
+      <div id="task-filters" role="group" aria-label="Filter tasks">
+  <button type="button" data-filter="all" aria-pressed="true">All</button>
+  <button type="button" data-filter="active" aria-pressed="false">Active</button>
+  <button type="button" data-filter="completed" aria-pressed="false">Completed</button>
+</div>
       <p id="empty-message">Your list is empty. Add your first task above.</p>
       <ul id="task-list"></ul>
       <p id="status" role="status"></p>
+      <p id="celebration" role="status" aria-live="polite" aria-atomic="true"></p>
       <p class="note">Tasks are saved in this browser and remain after refreshing. Clearing browser data removes them.</p>
 <p id="storage-warning" role="status"></p>
     </main>
   </body>
 </html>
-]

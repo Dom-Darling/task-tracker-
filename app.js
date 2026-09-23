@@ -9,6 +9,24 @@ const storageWarning = document.querySelector('#storage-warning');
 
 // State is the data our application currently remembers.
 const tasks = loadTasks();
+let currentFilter = 'all';
+
+const filterButtons = document.querySelectorAll('#task-filters button');
+
+filterButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    currentFilter = button.dataset.filter;
+
+    filterButtons.forEach(filterButton => {
+      filterButton.setAttribute(
+        'aria-pressed',
+        String(filterButton.dataset.filter === currentFilter)
+      );
+    });
+
+    renderTasks();
+  });
+});
 
 function loadTasks() {
   try {
@@ -51,32 +69,33 @@ function saveTasks() {
   }
 }
 
-// Watch for tasks entering the screen, then animate each row once.
+// Completion briefly changes the theme; reduced-motion users get only text.
+const main = document.querySelector('main');
+const celebration = document.querySelector('#celebration');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const revealObserver = 'IntersectionObserver' in window
-  ? new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        if (!reducedMotion.matches && entry.target.animate) {
-          entry.target.animate(
-            [
-              { opacity: 0, transform: 'translateY(18px)' },
-              { opacity: 1, transform: 'translateY(0)' }
-            ],
-            { duration: 500, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' }
-          );
-        }
-        revealObserver.unobserve(entry.target);
-      }
-    }, { threshold: 0.1 })
-  : null;
+let celebrationTimer;
 
-// Stop any active effects if the motion preference changes.
-reducedMotion.addEventListener('change', () => {
-  if (reducedMotion.matches) {
-    document.getAnimations().forEach((animation) => animation.cancel());
+function celebrateCompletion() {
+  clearTimeout(celebrationTimer);
+  main.classList.remove('is-celebrating');
+  celebration.textContent = '✦ Task complete ✦';
+
+  if (!reducedMotion.matches) {
+    // Restart the short animation when another task is completed quickly.
+    void main.offsetWidth;
+    main.classList.add('is-celebrating');
   }
+
+  celebrationTimer = setTimeout(() => {
+    main.classList.remove('is-celebrating');
+    celebration.textContent = '';
+  }, 1800);
+}
+
+reducedMotion.addEventListener('change', () => {
+  if (reducedMotion.matches) main.classList.remove('is-celebrating');
 });
+
 function updateTaskCount() {
   const completedCount = tasks.filter(task => task.completed).length;
   const activeCount = tasks.length - completedCount;
@@ -85,10 +104,20 @@ function updateTaskCount() {
 }
 // Rebuild the visible list from the current data.
 function renderTasks() {
-  revealObserver?.disconnect();
   list.replaceChildren();
+const visibleTasks = tasks.filter(task => {
+  if (currentFilter === 'active') {
+    return !task.completed;
+  }
 
-  for (const task of tasks) {
+  if (currentFilter === 'completed') {
+    return task.completed;
+  }
+
+  return true;
+});
+
+for (const task of visibleTasks) {
   const item = document.createElement('li');
   const label = document.createElement('label');
   const checkbox = document.createElement('input');
@@ -100,10 +129,19 @@ function renderTasks() {
   text.style.textDecoration = task.completed ? 'line-through' : 'none';
 
   checkbox.addEventListener('change', () => {
+    const hadFocus = document.activeElement === checkbox;
+    const rowIndex = visibleTasks.indexOf(task);
     task.completed = checkbox.checked;
-    text.style.textDecoration = task.completed ? 'line-through' : 'none';
+    saveTasks();
+    renderTasks();
 
-    localStorage.setItem('myflexxzone-tasks', JSON.stringify(tasks));
+    // Keep keyboard focus usable even when filtering removes this row.
+    if (hadFocus) {
+      const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+      const nextCheckbox = checkboxes[Math.min(rowIndex, checkboxes.length - 1)];
+      (nextCheckbox || document.querySelector('#task-filters [aria-pressed="true"]')).focus();
+    }
+    if (task.completed) celebrateCompletion();
   });
 
   label.append(checkbox, text);
@@ -116,15 +154,19 @@ deleteButton.addEventListener('click', () => {
   const index = tasks.indexOf(task);
   tasks.splice(index, 1);
 
-  localStorage.setItem('myflexxzone-tasks', JSON.stringify(tasks));
+  saveTasks();
   renderTasks();
 });
 
 item.append(label, deleteButton);
 list.append(item);
-  revealObserver?.observe(item);
 }
-  emptyMessage.hidden = tasks.length > 0;
+  emptyMessage.hidden = visibleTasks.length > 0;
+  emptyMessage.textContent = tasks.length === 0
+    ? 'Your list is empty. Add your first task above.'
+    : currentFilter === 'active'
+      ? 'No active tasks to show.'
+      : 'No completed tasks to show.';
 updateTaskCount();
 }
 
