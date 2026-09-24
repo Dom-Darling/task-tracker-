@@ -1,5 +1,6 @@
 const form = document.querySelector('#task-form');
 const input = document.querySelector('#task-input');
+const dueDateInput = document.querySelector('#task-due-date');
 const list = document.querySelector('#task-list');
 const error = document.querySelector('#error');
 const emptyMessage = document.querySelector('#empty-message');
@@ -123,6 +124,12 @@ function updateTaskCount() {
 // Rebuild the visible list from the current data.
 function renderTasks() {
   list.replaceChildren();
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const today = `${year}-${month}-${day}`;
 const visibleTasks = tasks.filter(task => {
   if (currentFilter === 'active') {
     return !task.completed;
@@ -143,7 +150,14 @@ for (const task of visibleTasks) {
 
   checkbox.type = 'checkbox';
   checkbox.checked = task.completed === true;
-  text.textContent = task.title;
+  const isOverdue =
+    Boolean(task.dueDate) &&
+    task.dueDate < today &&
+    !task.completed;
+
+  text.textContent = task.dueDate
+    ? `${task.title} — Due: ${task.dueDate}${isOverdue ? ' — Overdue' : ''}`
+    : task.title;
   text.style.textDecoration = task.completed ? 'line-through' : 'none';
 
   checkbox.addEventListener('change', () => {
@@ -227,6 +241,7 @@ form.addEventListener('submit', (event) => {
   event.preventDefault();
   const title = input.value.trim();
 
+
   if (title === '') {
     error.textContent = 'Enter a task before adding it.';
     input.setAttribute('aria-invalid', 'true');
@@ -236,7 +251,11 @@ form.addEventListener('submit', (event) => {
 
   error.textContent = '';
   input.removeAttribute('aria-invalid');
-  tasks.push({ title, completed: false });
+  tasks.push({
+    title,
+    completed: false,
+    dueDate: dueDateInput.value
+  });
   saveTasks();
   renderTasks();
   form.reset();
