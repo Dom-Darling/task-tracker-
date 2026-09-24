@@ -6,10 +6,28 @@ const emptyMessage = document.querySelector('#empty-message');
 const status = document.querySelector('#status');
 
 const storageWarning = document.querySelector('#storage-warning');
+const undoArea = document.querySelector('#undo-area');
+const undoMessage = document.querySelector('#undo-message');
+const undoButton = document.querySelector('#undo-button');
+
+let lastDeletedTask = null;
 
 // State is the data our application currently remembers.
 const tasks = loadTasks();
 let currentFilter = 'all';
+undoButton.addEventListener('click', () => {
+  if (lastDeletedTask === null) return;
+
+  tasks.splice(lastDeletedTask.index, 0, lastDeletedTask.task);
+  lastDeletedTask = null;
+
+  saveTasks();
+  renderTasks();
+
+  undoArea.hidden = true;
+  undoMessage.textContent = '';
+  input.focus();
+});
 
 const filterButtons = document.querySelectorAll('#task-filters button');
 
@@ -176,10 +194,19 @@ deleteButton.setAttribute('aria-label', `Delete ${task.title}`);
 
 deleteButton.addEventListener('click', () => {
   const index = tasks.indexOf(task);
+
+  lastDeletedTask = {
+    task: task,
+    index: index
+  };
+
   tasks.splice(index, 1);
 
   saveTasks();
   renderTasks();
+
+  undoMessage.textContent = `Deleted: ${task.title}`;
+  undoArea.hidden = false;
 });
 
 item.append(label, editButton, deleteButton);
