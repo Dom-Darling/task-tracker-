@@ -8,10 +8,16 @@
     <script src="app.js" defer></script>
   </head>
   <body>
+    <div class="leaf-garden" aria-hidden="true">
+      <img src="cannabis-leaf.svg" alt=""><img src="cannabis-leaf.svg" alt="">
+      <img src="cannabis-leaf.svg" alt=""><img src="cannabis-leaf.svg" alt="">
+      <img src="cannabis-leaf.svg" alt=""><img src="cannabis-leaf.svg" alt="">
+    </div>
     <main>
-      <p class="eyebrow">ONE STEP AT A TIME</p>
+      <div class="herb-mark" aria-hidden="true"><img src="cannabis-leaf.svg" alt=""></div>
+      <p class="eyebrow">THE DAILY CHILL • EST. 4:20</p>
       <h1>My FlexXZone</h1>
-      <p>Add something you want to get done today.</p>
+      <p>A little focus. A little flow. Make room for a mellow day.</p>
       <details class="help-menu">
   <summary aria-label="How to use MyFlexXZone" title="How to use">?</summary>
   <ul>
@@ -53,6 +59,20 @@
       <p id="celebration" role="status" aria-live="polite" aria-atomic="true"></p>
       <p class="note">Tasks are saved in this browser and remain after refreshing. Clearing browser data removes them.</p>
 <p id="storage-warning" role="status"></p>
+<section aria-labelledby="backup-heading">
+  <h2 id="backup-heading">Backup and restore</h2>
+  <p>Download a copy of all your tasks for safekeeping. Restoring a backup replaces your entire current list after confirmation.</p>
+  <button id="export-button" type="button">Download backup</button>
+  <p>
+  <label for="restore-file">Choose a backup to restore</label>
+  <input
+    id="restore-file"
+    type="file"
+    accept=".json,application/json"
+  >
+</p>
+  <p id="backup-status" role="status"></p>
+</section>
     </main>
   </body>
 </html>

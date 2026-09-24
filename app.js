@@ -10,12 +10,143 @@ const storageWarning = document.querySelector('#storage-warning');
 const undoArea = document.querySelector('#undo-area');
 const undoMessage = document.querySelector('#undo-message');
 const undoButton = document.querySelector('#undo-button');
-
+const exportButton = document.querySelector('#export-button');
+const backupStatus = document.querySelector('#backup-status');
+const restoreFile = document.querySelector('#restore-file');
 let lastDeletedTask = null;
 
 // State is the data our application currently remembers.
 const tasks = loadTasks();
 let currentFilter = 'all';
+exportButton.addEventListener('click', () => {
+  const backup = {
+    version: 1,
+    tasks: tasks
+  };
+
+  const backupText = JSON.stringify(backup, null, 2);
+  const file = new Blob([backupText], {
+    type: 'application/json'
+  });
+
+  const fileUrl = URL.createObjectURL(file);
+  const link = document.createElement('a');
+
+  link.href = fileUrl;
+  link.download = 'myflexxzone-backup.json';
+  document.body.append(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(fileUrl), 1000);
+
+  backupStatus.textContent =
+    'Backup download requested. Check your browser’s downloads.';
+});
+restoreFile.addEventListener('change', async () => {
+  const file = restoreFile.files[0];
+  if (!file) return;
+  restoreFile.disabled = true;
+
+  try {
+    const fileText = await file.text();
+    const backup = JSON.parse(fileText);
+
+    if (
+      backup === null ||
+      typeof backup !== 'object' ||
+      backup.version !== 1 ||
+      !Array.isArray(backup.tasks)
+    ) {
+      throw new Error('Unrecognized backup format');
+    }
+
+    const tasksAreValid = backup.tasks.every(task => {
+      if (
+        task === null ||
+        typeof task !== 'object' ||
+        typeof task.title !== 'string' ||
+        task.title.trim() === '' ||
+        task.title.length > 200 ||
+        typeof task.completed !== 'boolean'
+      ) {
+        return false;
+      }
+
+      if (task.dueDate === undefined || task.dueDate === '') {
+        return true;
+      }
+
+      if (
+        typeof task.dueDate !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(task.dueDate)
+      ) {
+        return false;
+      }
+
+      const date = new Date(`${task.dueDate}T00:00:00Z`);
+
+      return (
+        !Number.isNaN(date.getTime()) &&
+        date.toISOString().slice(0, 10) === task.dueDate
+      );
+    });
+
+    if (!tasksAreValid) {
+      throw new Error('Backup contains invalid task data');
+    }
+    // Copy only the fields this application understands.
+    const restoredTasks = backup.tasks.map(task => ({
+      title: task.title.trim(),
+      completed: task.completed,
+      dueDate: task.dueDate || ''
+    }));
+
+    const confirmed = window.confirm(
+      `Replace your current ${tasks.length} tasks with ${restoredTasks.length} tasks from this backup? ` +
+      'This replaces the entire list, including tasks hidden by filters. ' +
+      'Download a backup of your current list first if you want to keep it.'
+    );
+
+    if (!confirmed) {
+      backupStatus.textContent = 'Restore cancelled. Your tasks are unchanged.';
+      return;
+    }
+
+    // Save successfully before changing the list held in memory.
+    try {
+      localStorage.setItem('myflexxzone-tasks', JSON.stringify(restoredTasks));
+    } catch (error) {
+      backupStatus.textContent =
+        'Could not save the restored tasks. Your current list is unchanged.';
+      return;
+    }
+
+    tasks.length = 0;
+    for (const task of restoredTasks) tasks.push(task);
+    lastDeletedTask = null;
+    undoArea.hidden = true;
+    undoMessage.textContent = '';
+    storageWarning.textContent = '';
+    clearTimeout(celebrationTimer);
+    main.classList.remove('is-celebrating');
+    celebration.textContent = '';
+    currentFilter = 'all';
+    filterButtons.forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.filter === 'all'));
+    });
+    renderTasks();
+    backupStatus.textContent = `Restored ${tasks.length} tasks from backup.`;
+    input.focus();
+  } catch (error) {
+    backupStatus.textContent =
+      'Could not read this backup. Choose a MyFlexXZone JSON backup.';
+  } finally {
+    restoreFile.value = '';
+    restoreFile.disabled = false;
+  }
+});
+
 undoButton.addEventListener('click', () => {
   if (lastDeletedTask === null) return;
 
@@ -123,13 +254,10 @@ function updateTaskCount() {
 }
 // Rebuild the visible list from the current data.
 function renderTasks() {
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   list.replaceChildren();
 
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const today = `${year}-${month}-${day}`;
 const visibleTasks = tasks.filter(task => {
   if (currentFilter === 'active') {
     return !task.completed;
@@ -150,7 +278,7 @@ for (const task of visibleTasks) {
 
   checkbox.type = 'checkbox';
   checkbox.checked = task.completed === true;
-  const isOverdue =
+    const isOverdue =
     Boolean(task.dueDate) &&
     task.dueDate < today &&
     !task.completed;
