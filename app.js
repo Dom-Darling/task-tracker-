@@ -207,6 +207,7 @@ deleteButton.addEventListener('click', () => {
 
   undoMessage.textContent = `Deleted: ${task.title}`;
   undoArea.hidden = false;
+  undoButton.focus();
 });
 
 item.append(label, editButton, deleteButton);

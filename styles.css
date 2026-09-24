@@ -114,7 +114,15 @@ button:hover { background: #ddff9e; }
   body { padding: 24px 16px; }
   .input-row { flex-direction: column; }
   main { padding: 26px 20px; }
-  #task-list li { padding: 12px 8px; gap: 8px; }
+  #task-list li {
+    padding: 12px 8px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  #task-list label {
+    flex-basis: 100%;
+  }
   #task-filters button { flex: 1; padding-inline: 9px; }
 }
 /* Compact help button and expandable instructions. */
@@ -154,6 +162,9 @@ button:hover { background: #ddff9e; }
   border-radius: 12px;
   background: #10170e;
   box-shadow: 0 12px 30px #0008;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
 }
 
 .help-menu p,
