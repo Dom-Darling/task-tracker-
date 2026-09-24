@@ -117,3 +117,51 @@ button:hover { background: #ddff9e; }
   #task-list li { padding: 12px 8px; gap: 8px; }
   #task-filters button { flex: 1; padding-inline: 9px; }
 }
+/* Compact help button and expandable instructions. */
+.help-menu {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.help-menu summary {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  border: 1px solid var(--neon);
+  border-radius: 50%;
+  background: #151c12;
+  color: var(--neon);
+  font-size: 20px;
+  list-style: none;
+}
+
+.help-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.help-menu[open] {
+  width: min(300px, calc(100% - 36px));
+  padding: 12px;
+  border: 1px solid #637447;
+  border-radius: 12px;
+  background: #10170e;
+  box-shadow: 0 12px 30px #0008;
+}
+
+.help-menu p,
+.help-menu li {
+  font-size: 14px;
+}
+
+/* Leave room for the help button above the heading. */
+main {
+  padding-top: 76px;
+}

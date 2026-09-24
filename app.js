@@ -145,7 +145,31 @@ for (const task of visibleTasks) {
   });
 
   label.append(checkbox, text);
-  const deleteButton = document.createElement('button');
+const editButton = document.createElement('button');
+editButton.type = 'button';
+editButton.textContent = 'Edit';
+editButton.setAttribute('aria-label', `Edit ${task.title}`);
+
+editButton.addEventListener('click', () => {
+  const newTitle = window.prompt('Edit your task:', task.title);
+  if (newTitle === null) return;
+
+  const trimmedTitle = newTitle.trim();
+  if (trimmedTitle === '' || trimmedTitle.length > 200) {
+    window.alert('Enter a task between 1 and 200 characters.');
+    return;
+  }
+
+  task.title = trimmedTitle;
+  saveTasks();
+  renderTasks();
+
+  // Restore keyboard focus after rebuilding the task rows.
+  const rowIndex = visibleTasks.indexOf(task);
+  list.children[rowIndex]?.querySelector('button')?.focus();
+});
+
+const deleteButton = document.createElement('button');
 deleteButton.type = 'button';
 deleteButton.textContent = 'Delete';
 deleteButton.setAttribute('aria-label', `Delete ${task.title}`);
@@ -158,7 +182,7 @@ deleteButton.addEventListener('click', () => {
   renderTasks();
 });
 
-item.append(label, deleteButton);
+item.append(label, editButton, deleteButton);
 list.append(item);
 }
   emptyMessage.hidden = visibleTasks.length > 0;
