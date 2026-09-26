@@ -233,3 +233,42 @@ input::file-selector-button { font: inherit; border: 0; border-radius: 6px; padd
   h1 { font-size: clamp(32px, 10vw, 44px); }
   .eyebrow { font-size: 10px; letter-spacing: .12em; }
 }
+
+/* Rasta framing and illustrated lounge accents. */
+body { background: radial-gradient(ellipse at 0% 12%, #8b302638, transparent 55%), radial-gradient(ellipse at 100% 75%, #478f3d38, transparent 55%), #0b1510; isolation: isolate; }
+.leaf-garden { z-index: -2; }
+.leaf-garden img { opacity: .48; }
+main { border: 3px solid transparent; background: linear-gradient(#142319, #142319) padding-box, repeating-linear-gradient(125deg, #b94635 0 36px, #e2ba53 36px 72px, #448850 72px 108px) border-box; outline-color: #e2ba5344; box-shadow: 0 24px 80px #0009; }
+main::after { background: linear-gradient(90deg, #c34c3b 0 33%, #edc45d 33% 66%, #61a35f 66%); height: 4px; border-radius: 4px; }
+.herb-mark { background: #203921; border-color: #dbb65b; box-shadow: -5px 0 0 #b9463566, 5px 0 0 #44885088; }
+.eyebrow { color: #edc45d; }
+.lounge-art { margin: 20px 0 26px; padding: 12px 8px; border-block: 1px solid #e2ba533d; background: linear-gradient(100deg, #b9463510, #e2ba5310, #44885010); }
+.lounge-art img { display: block; width: 100%; height: auto; }
+#task-list li:nth-child(even) { background: #332e1c; border-color: #89723b; border-left-color: #edc45d; }
+#task-list li:has(input:checked) { background: #202d26; border-left-color: #61a35f; }
+#task-list button { color: #f4dcb0; border-color: #a58a58; }
+#task-list button:hover { background: #504021; }
+.motion-toggle { display: flex; align-items: center; gap: 8px; margin: 20px 0 0; color: var(--muted); font-size: 12px; cursor: pointer; width: fit-content; min-height: 44px; }
+.motion-toggle input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: #edc45d; }
+/* Soft overlapping plumes stay behind the opaque content panel. */
+.smoke-haze { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+.smoke-haze i { position: absolute; bottom: -35vh; width: clamp(240px, 40vw, 600px); height: 110vh; border-radius: 46% 54% 32% 68%; background: radial-gradient(ellipse at 45% 60%, #dde9cc38, transparent 57%), radial-gradient(ellipse at 65% 32%, #c9d8bd24, transparent 50%); filter: blur(26px); opacity: .65; }
+.smoke-haze i:nth-child(1) { left: -14%; }
+.smoke-haze i:nth-child(2) { right: -15%; bottom: -15vh; }
+.smoke-haze i:nth-child(3) { left: -8%; bottom: 20vh; }
+.smoke-haze i:nth-child(4) { right: -12%; bottom: 30vh; }
+@media (prefers-reduced-motion: no-preference) {
+  .smoke-haze i { animation: smoke-rise 24s ease-in-out infinite alternate; }
+  .smoke-haze i:nth-child(2) { animation-delay: -12s; animation-duration: 29s; }
+  .smoke-haze i:nth-child(3) { animation-delay: -18s; animation-duration: 32s; }
+  .smoke-haze i:nth-child(4) { animation-delay: -7s; animation-duration: 27s; }
+  @keyframes smoke-rise { from { transform: translate3d(-20px, 12vh, 0) rotate(-12deg) scaleX(.85); opacity: .4; } to { transform: translate3d(35px, -28vh, 0) rotate(15deg) scaleX(1.2); opacity: .8; } }
+}
+body:has(#pause-atmosphere:checked) .smoke-haze i,
+body:has(#pause-atmosphere:checked) .leaf-garden img,
+body:has(#pause-atmosphere:checked) .herb-mark img { animation-play-state: paused; }
+@media (max-width: 440px) {
+  .leaf-garden img { opacity: .3; }
+  .lounge-art { margin-inline: -8px; padding-inline: 0; }
+  .smoke-haze i { filter: blur(18px); }
+}
