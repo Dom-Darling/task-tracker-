@@ -33,7 +33,7 @@ exportButton.addEventListener('click', () => {
   const link = document.createElement('a');
 
   link.href = fileUrl;
-  link.download = 'myflexxzone-backup.json';
+  link.download = 'doms-task-trackers-portfolio-backup.json';
   document.body.append(link);
   link.click();
   link.remove();
@@ -140,7 +140,7 @@ restoreFile.addEventListener('change', async () => {
     input.focus();
   } catch (error) {
     backupStatus.textContent =
-      'Could not read this backup. Choose a MyFlexXZone JSON backup.';
+      "Could not read this backup. Choose a Dom's Task Trackers Portfolio JSON backup.";
   } finally {
     restoreFile.value = '';
     restoreFile.disabled = false;
